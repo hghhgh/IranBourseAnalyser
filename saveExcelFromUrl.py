@@ -3,25 +3,33 @@ import jdatetime
 import datetime
 import os.path
 
-numberOfDayIgnor = 10 # for not data available
+numberOfDayIgnore = 10  # check : not data available on the server
+numberOfFileIgnore = 10  # check : data existed on local system
 #example = 'http://www.iranbourse.com/archive/Trade/Cash/TradeOneDay/TradeOneDay_1396_2_18.xls'
-boorsSite = 'http://www.iranbourse.com/archive/Trade/Cash/TradeOneDay/'
+bourseSite = 'http://www.iranbourse.com/archive/Trade/Cash/TradeOneDay/'
+ed = datetime.date.today()
 
-
-ed = datetime.date.today() -  datetime.timedelta(2)
-pd = jdatetime.date.fromgregorian(date=ed)
-name = 'TradeOneDay_' + str(pd.year) + '_' + str(pd.month) + '_' + str(pd.day) + '.xls'
-
-while os.path.exists('excels/'+name):
+nodata = 0  # no data on the server
+redata = 0  # repeated data
+while nodata < numberOfDayIgnore and redata < numberOfFileIgnore:
     ed = ed - datetime.timedelta(1)
     pd = jdatetime.date.fromgregorian(date=ed)
     name = 'TradeOneDay_' + str(pd.year) + '_' + str(pd.month) + '_' + str(pd.day) + '.xls'
 
-url = boorsSite + name
-r = requests.get(url)
+    # check if the file existed or not
+    if os.path.exists('excels/' + name):
+        redata += 1
+        print('file :' + name + ' already exists !. repeated data = ' + str(redata))
+        continue
+    else:
+        redata = 0
 
-nodata = 0
-while nodata < numberOfDayIgnor:
+    # go for next file to download
+    url = bourseSite + name
+    # download the url contents in binary format
+    r = requests.get(url)
+
+    # check if the file downloaded correctly
     if r.status_code == 200:
         nodata = 0
         # open method to open a file on your system and write the contents
@@ -29,14 +37,4 @@ while nodata < numberOfDayIgnor:
             code.write(r.content)
     else:
         nodata += 1
-        print(nodata)
-
-    while os.path.exists('excels/' + name):
-        ed = ed - datetime.timedelta(1)
-        pd = jdatetime.date.fromgregorian(date=ed)
-        name = 'TradeOneDay_' + str(pd.year) + '_' + str(pd.month) + '_' + str(pd.day) + '.xls'
-
-    url = boorsSite + name
-    # download the url contents in binary format
-    r = requests.get(url)
-
+        print('Cannot get file : ' + name + ' !. no data = ' + str(nodata))

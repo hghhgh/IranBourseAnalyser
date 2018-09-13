@@ -43,11 +43,13 @@ for namad in allData:
     hajm = namadData['حجم']
     dafaatmoamele = namadData['دفعات معامله']
     qeymatpayani = namadData['مقدار قیمت پایانی']
-    taqirqeymatpayani = namadData['تغییر قیمت پایانی']
-    darsadqeymatpayani = namadData['درصد قیمت پایانی']
-    akharinqeymat = namadData['مقدار آخرین قیمت']
+    taqirqeymatpayani = namadData[
+        'تغییر قیمت پایانی']  # «قیمت پایانی» برابر با میانگین وزنی قیمت‌های معامله‌شده در همان روز است.
+    darsadqeymatpayani = namadData['درصد قیمت پایانی']  # میانگین قیمت سهم در روز
+    akharinqeymat = namadData[
+        'مقدار آخرین قیمت']  # «قیمت آخرین معامله» برابر است با آخرین قیمتی که تا آن لحظه معامله شده است.
     taqirakharinqeymat = namadData['تغییر آخرین قیمت']
-    darsadakharintaqir = namadData['درصد آخرین قیمت']
+    darsadakharintaqir = namadData['درصد آخرین قیمت']  # آخرین قیمت معامله شده
     qeymatroozqabl = namadData['قیمت روز قبل']
     arzeshbazar = namadData['ارزش بازار']
 
@@ -60,23 +62,18 @@ for namad in allData:
     AnalysisDataForAll[namad]['dafaatTrendLine'] = z
     # drawDataWithTrendLine(dafaatseries, z, namad + '-' + 'dafaat moamele')
 
-
-    bishtarinseries = [int(d['v']) for d in bishtarin]
-    z = numpy.polyfit(range(len(bishtarin)), bishtarinseries, 1)
+    darsadqeymatpayaniseries = [float(d['v']) for d in darsadqeymatpayani]
+    z = numpy.polyfit(range(len(darsadqeymatpayani)), darsadqeymatpayaniseries, 1)
     AnalysisDataForAll[namad]['bishtarinTrendLine'] = z
-    # drawDataWithTrendLine(bishtarinseries, z, namad + '-' + 'bishtarin')
+    drawDataWithTrendLine(darsadqeymatpayaniseries, z, namad + '-' + 'darsad qeymat payani')
 
-    kamtarinseries = [int(d['v']) for d in kamtarin]
-    z = numpy.polyfit(range(len(kamtarin)), kamtarinseries, 1)
+    darsadakharintaqirseries = [float(d['v']) for d in darsadakharintaqir]
+    z = numpy.polyfit(range(len(darsadakharintaqir)), darsadakharintaqirseries, 1)
     AnalysisDataForAll[namad]['kamtarinTrendLine'] = z
-    # drawDataWithTrendLine(kamtarinseries, z, namad + '-' + 'kamtarin')
+    drawDataWithTrendLine(darsadakharintaqirseries, z, namad + '-' + 'darsad akharin taqir')
 
-    kamtarinbishtarinfaseleseries = numpy.asarray(bishtarinseries) - numpy.asarray(kamtarinseries)
+    kamtarinbishtarinfaseleseries = numpy.asarray([float(d['v']) for d in bishtarin]) - numpy.asarray(
+        [float(d['v']) for d in kamtarin])
     z = numpy.polyfit(range(len(kamtarinbishtarinfaseleseries)), kamtarinbishtarinfaseleseries, 1)
     AnalysisDataForAll[namad]['kamtarinbishtarinfaseleTrendLine'] = z
-    # drawDataWithTrendLine(kamtarinbishtarinfaseleseries, z, namad + '-' + 'kamtarin bishtarin fasele')
-
-
-
-
-
+    drawDataWithTrendLine(kamtarinbishtarinfaseleseries, z, namad + '-' + 'kamtarin bishtarin fasele')

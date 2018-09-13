@@ -1,8 +1,6 @@
 ## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/hghhgh/IranBourseAnalyser/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+پروژه استخراج داده های بورس از سایت http://www.iranbourse.com/archive/
 
 ### Markdown
 
@@ -11,7 +9,14 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 ```markdown
 Syntax highlighted code block
 
-# Header 1
+# مراحل اجرا کردن فایل ها بدین صورت است :
+۱. برای دانلود اتوماتیک از سایت فایل زیر را اجرا کنید :
+saveExcelFromUrl.py
+۲. برای استخراج فایل های دانلود شده و تجمیع در یک دیکشنری پایتون از فایل زیر استفاده کنید :
+mergExcelFiles.py
+۳. برای استفاده از فایل pkl ساخته شده در مر حله دو و ایجاد فایل اکسل برای هر نماد بورس از فایل زیر استفاده کنید :
+convertPKLtoXLS.py
+۴. 
 ## Header 2
 ### Header 3
 

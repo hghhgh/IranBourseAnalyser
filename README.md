@@ -1,42 +1,20 @@
-## Welcome to GitHub Pages
+## Iran bourse data downloader and analyzer
 
-پروژه استخراج داده های بورس از سایت http://www.iranbourse.com/archive/
+Extract and Analys data from [Iran Bourse](http://www.iranbourse.com/archive/)
 
-### Markdown
+### Files and their descriptions
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# Steps of using files
+1. Automatic downloading of **daily** bourse data as .xls file : 
+- `saveExcelFromUrl.py`
+2. To merge daily _xls_ files to python dictionary :
+- `mergExcelFiles.py`
+3. To use .pkl file created in step 2 and create .xls per Namad :
+- `convertPKLtoXLS.py`
+4. To score each Namad in order to find the bests for buy:
+- `calculateNamadScore.py`
 
-```markdown
-Syntax highlighted code block
-
-# مراحل اجرا کردن فایل ها بدین صورت است :
-۱. برای دانلود اتوماتیک از سایت فایل زیر را اجرا کنید :
-saveExcelFromUrl.py
-۲. برای استخراج فایل های دانلود شده و تجمیع در یک دیکشنری پایتون از فایل زیر استفاده کنید :
-mergExcelFiles.py
-۳. برای استفاده از فایل pkl ساخته شده در مر حله دو و ایجاد فایل اکسل برای هر نماد بورس از فایل زیر استفاده کنید :
-convertPKLtoXLS.py
-۴. 
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/hghhgh/IranBourseAnalyser/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
 ### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+email me : hosein.ghiasy _at_ gmail.com

@@ -9,6 +9,9 @@ import pickle
 
 import jdatetime
 
+# ! to-do
+# not implemented yet
+
 log = open('log.txt', 'w')
 
 # load data
@@ -60,5 +63,5 @@ for namad in allData:
                             print('prophit detected !')
                             print('Buy on: ' + datBish1.isoformat())
                             print('Sell on: ' + datBish2.isoformat())
-                            print(str(int(perc*100)/100) + ' %' )
+                            print(str(int(perc * 100) / 100) + ' %')
                             print(growth)

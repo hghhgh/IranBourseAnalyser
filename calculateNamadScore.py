@@ -2,9 +2,12 @@ import datetime
 import pickle
 
 import numpy
+import matplotlib
 from matplotlib import pyplot
 
 from statsmodels.tsa.seasonal import seasonal_decompose
+
+# matplotlib.rc('font', family='Arial')
 
 log = open('log.txt', 'w')
 
@@ -24,7 +27,8 @@ def drawDataWithTrendLine(series, z, name):
     pyplot.plot(x, series, 'o')
     p = numpy.poly1d(z)
     pyplot.plot(range(len(series)), p(x),'r-')
-    pyplot.suptitle(name)
+    # pyplot.suptitle(name)
+    pyplot.title(name)  # .encode('utf-8'))
     pyplot.show()
 
 
@@ -53,6 +57,7 @@ for namad in allData:
     qeymatroozqabl = namadData['قیمت روز قبل']
     arzeshbazar = namadData['ارزش بازار']
 
+    # extract scores :
     AnalysisDataForAll[namad] = {}
     AnalysisDataForAll[namad]['tedad_roozhayee_ke_namad_tu_300ta_bude'] = bishtarin.__len__()
 
@@ -60,7 +65,7 @@ for namad in allData:
     AnalysisDataForAll[namad]['miangeen_tedad_moamelat_dar_rooz_baraye_kolle_dadeha'] = sum(dafaatseries)/len(dafaatseries)
     z = numpy.polyfit(range(len(dafaatmoamele)), dafaatseries, 1)
     AnalysisDataForAll[namad]['dafaatTrendLine'] = z
-    # drawDataWithTrendLine(dafaatseries, z, namad + '-' + 'dafaat moamele')
+    drawDataWithTrendLine(dafaatseries, z, namad + '-' + 'dafaat moamele')
 
     darsadqeymatpayaniseries = [float(d['v']) for d in darsadqeymatpayani]
     z = numpy.polyfit(range(len(darsadqeymatpayani)), darsadqeymatpayaniseries, 1)

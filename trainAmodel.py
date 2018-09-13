@@ -8,11 +8,16 @@ from sklearn.utils.testing import *
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import keras
+import os
 
 log = open('log.txt', 'w')
 
 # load data
-maindir = 'namadsOnDayOfWeek/'
+maindir = 'namadsOnDayOfWeek'
+
+if not os.path.exists(maindir):
+    os.makedirs(maindir)
+
 # filename = 'خبهمن1.xls'
 filename = 'ولساپا1.xls'
 rawdata = pd.ExcelFile(maindir + '/' + filename)

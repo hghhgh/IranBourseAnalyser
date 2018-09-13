@@ -8,6 +8,9 @@ jdatetime.set_locale('fa_IR')
 
 allData = {}
 dir = "excels"
+if not os.path.exists(dir):
+    os.makedirs(dir)
+
 for root, dirs, files in os.walk(dir):
     files.sort()
     print('start readin files')

@@ -1,15 +1,12 @@
 ## Iran bourse data downloader and analyzer
 
-Extract and Analys data from [Iran Bourse](http://www.iranbourse.com/archive/)
+Extract and Analys data from [Iran bourse or stock exchange](http://www.iranbourse.com/archive/)
+
+دانلود و تحلیل کننده داده های بورس اوراق بهادار تهران
 
 ### Files and their descriptions
 
 # Steps of using files
-0. Build following folders beside the scripts:
-- excels
-- namads
-- namadsOnDayOfWeek
-- trainAmodelResults
 
 1. Automatic downloading of **daily** bourse data as .xls file : 
 - `saveExcelFromUrl.py`

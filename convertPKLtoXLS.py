@@ -2,6 +2,10 @@ import os
 import pickle
 import xlwt
 
+dir = "namads"
+if not os.path.exists(dir):
+    os.makedirs(dir)
+
 f = open("AllData.pkl", "rb")
 allData = pickle.load(f)
 
@@ -10,7 +14,7 @@ print('start writing resaults for ' + str(allData.__len__()) + ' namad')
 pr = 0
 for namad in allData:
 
-    if os.path.exists('namads/'+namad+'.xls'):
+    if os.path.exists(dir + '/' + namad + '.xls'):
         continue
 
     book = xlwt.Workbook()
@@ -44,4 +48,4 @@ for namad in allData:
     # if pr >10 :
     #     break
 
-    book.save('namads/'+namad+'.xls')
+    book.save(dir + '/' + namad + '.xls')

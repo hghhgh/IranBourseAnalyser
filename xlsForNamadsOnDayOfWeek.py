@@ -10,11 +10,14 @@ allData = pickle.load(f)
 
 print('start writing resaults for ' + str(allData.__len__()) + ' namad')
 
-outDir = 'namadsOnDayOfWeek/'
+outDir = 'namadsOnDayOfWeek'
+if not os.path.exists(outDir):
+    os.makedirs(outDir)
+
 pr = 0
 for namad in allData:
 
-    if os.path.exists(outDir + namad + '.xls'):
+    if os.path.exists(outDir + '/' + namad + '.xls'):
         continue
 
     book = xlwt.Workbook()
@@ -67,7 +70,7 @@ for namad in allData:
 
     print(str(int(pr / allData.__len__() * 100)) + '% ... namad: ' + namad + ' saved!')
 
-    book.save(outDir + namad + '.xls')
+    book.save(outDir + '/' + namad + '.xls')
     # for n in nparrays:
     #     directory = outDir+'/'+namad+'_asndarray/'
     #     if not os.path.exists(directory):

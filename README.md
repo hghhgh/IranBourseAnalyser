@@ -19,8 +19,13 @@ Extract and Analys data from [Iran bourse or stock exchange](http://www.iranbour
 
 # Helps and Tutorial Articles
 
+- [آموزش بورس اوراق بهادار](http://tse.ir/amuzesh.html)
+- [انواع تحلیل](http://tse.ir/cms/Portals/1/Amouzesh/33-ravesh%20haye%20tahlilpdf.pdf)
+- فیلم های آموزشی انواع تحلیل
+    - [ویدیوهای تکنیکال مقدماتی](https://www.aparat.com/video/video/listuser/username/agahex/usercat/84240)
+    - [ویدیوهای تکنیکال پیشرفته](https://www.aparat.com/video/video/listuser/username/agahex/usercat/83118)
+    - [ویدیوهای تحلیل بنیادی مقدماتی](https://www.aparat.com/video/video/listuser/username/agahex/usercat/83486)
 - [حجم مبنا و قیمت پایانی](https://files.ershants.ir/fileserver/source/1062/%d8%ad%d8%ac%d9%85%20%d9%85%d8%a8%d9%86%d8%a7/%d8%ad%d8%ac%d9%85_%d9%85%d8%a8%d9%86%d8%a7.pdf)
-- 
 
 ### Support or Contact
 

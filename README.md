@@ -6,16 +6,51 @@ Extract and Analys data from [Iran bourse or stock exchange](http://www.iranbour
 
 ### Files and their descriptions
 
-# Steps of using files
+# This project has 3 packages 
 
-1. Automatic downloading of **daily** bourse data as .xls file : 
-- `saveExcelFromUrl.py`
-2. To merge daily _xls_ files to python dictionary :
-- `mergExcelFiles.py`
-3. To use .pkl file created in step 2 and create .xls per Namad :
-- `convertPKLtoXLS.py`
-4. To score each Namad in order to find the bests for buy:
-- `calculateNamadScore.py`
+1. DataPrepairing
+2. AnalysisHelpers
+3. DecisionSupports
+
+The last package is the main one !
+
+
+## with following usage examples :
+
+- DataPrepairing : 
+```python
+from DataPreparing import DownloadFromUrl
+from DataPreparing import MergeFiles
+from DataPreparing import ExtractNewDataFilesFromAnother
+from DataPreparing import MakeGroupOfData
+
+# Update Downloaded Data
+DownloadFromUrl.downloadAllDayExcelsFromIranbourse(OutDir='Data/excels')
+print('raw data updated !')
+
+# Merge Iranbourse daily excel to python dict pkl file
+MergeFiles.mergeIranbourseAllDayExcels(InputDir='Data/excels', OutputFile="Data/AllData.pkl")
+print('all xls merged !')
+
+# To use .pkl file created in step 2 and create .xls per Namad
+ExtractNewDataFilesFromAnother.createXLSforNamadFromPkl(OutputDir='Data/namads', InputFile='Data/AllData.pkl')
+print('XLS for each namad has been created !')
+
+# Make Group of Data for each Namad in term of the day of a week : like شنبه یا یکشنبه
+MakeGroupOfData.groupNamadDataIntermOfDayOfWeekFromPKL(InputFile='Data/AllData.pkl', OutputDir='Data/namadsOnDayOfWeek')
+print('Data were grouped by the day of the week. ')
+```
+
+- AnalysisHelpers :
+```python
+
+```
+
+- DecisionSupports :
+```python
+
+```
+
 
 # Helps and Tutorial Articles
 

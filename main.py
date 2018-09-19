@@ -4,8 +4,8 @@ from DataPreparing import ExtractNewDataFilesFromAnother
 from DataPreparing import MakeGroupOfData
 
 # # Update Downloaded Data
-# DownloadFromUrl.downloadAllDayExcelsFromIranbourse(OutDir='Data/excels')
-# print('raw data updated !')
+DownloadFromUrl.downloadAllDayExcelsFromIranbourse(OutDir='Data/excels')
+print('raw data updated !')
 #
 # Merge Iranbourse daily excel to python dict pkl file
 MergeFiles.mergeIranbourseAllDayExcels(InputDir='Data/excels', OutputFile="Data/AllData.pkl")
@@ -21,3 +21,4 @@ print('all xls merged !')
 
 
 # DownloadFromUrl.downloadAllNamadExcelsFromIranbourse(OutputDir='Data/NamadsExcelsFromIranBourse')
+

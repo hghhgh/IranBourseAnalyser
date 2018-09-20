@@ -1,4 +1,4 @@
-# My process of reach a good decision (A code of best practice !)
+# My process of reaching a good decision (A code of best practice !)
 
 ## Data preparation
 1. Read data from _irbourse.ir_

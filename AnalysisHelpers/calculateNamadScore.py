@@ -3,7 +3,9 @@
 import datetime
 import math
 import pickle
-from bidi import algorithm as bidialg
+
+import arabic_reshaper
+import bidi.algorithm
 import numpy
 from matplotlib import pyplot
 
@@ -24,7 +26,8 @@ def drawDataWithTrendLine(series, z, name):
     p = numpy.poly1d(z)
     pyplot.plot(range(len(series)), p(x), 'r-')
     # pyplot.suptitle(name)
-    text = bidialg.get_display(name)  # .encode('utf-8'))
+    reshaped_text = arabic_reshaper.reshape(name)
+    text = bidi.algorithm.get_display(reshaped_text)
     pyplot.title(text)
     pyplot.show()
 

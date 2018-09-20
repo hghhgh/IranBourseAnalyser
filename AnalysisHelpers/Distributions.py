@@ -1,6 +1,9 @@
 import math
 import os
 import pickle
+
+import arabic_reshaper
+import bidi.algorithm
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
@@ -121,7 +124,9 @@ def computePercentOfChangeDistributionForAllNamads(OutputDir="Distiribution", In
             # _counts = Counter(a)
 
             # plt.hist(a, 'auto)
-            # plt.suptitle(Namad + ' > '+str(m))
+            # reshaped_text = arabic_reshaper.reshape(Namad)
+            # text = bidi.algorithm.get_display(reshaped_text)
+            # plt.suptitle(text + ' > '+str(m))
 
             # plt.show()
             average = np.average(a)

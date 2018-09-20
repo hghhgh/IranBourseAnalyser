@@ -61,7 +61,8 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
     Namads = []
     # extract indicesHTMLFile eith ids
     # save this url ( 'http://new.tse.ir/indices.html') using browser and then use it
-    f = codecs.open('Data/indicesHTMLFile/بورس اوراق بهادار تهران - نمودار شاخص ها.html', encoding='utf-8')
+    f = codecs.open('DataPreparing/Data/indicesHTMLFile/بورس اوراق بهادار تهران - نمودار شاخص ها.html',
+                    encoding='utf-8')
     htmltxt = f.read()
     f.close()
     parsed_html = BeautifulSoup(htmltxt, 'lxml')
@@ -73,7 +74,7 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
 
     # another list from
     # save this url ( 'http://tse.ir/listing.html?section=alphabet&cat=cash') using browser and then use it
-    f = codecs.open('Data/indicesHTMLFile/بورس اوراق بهادار تهران - لیست شرکت ها.html', encoding='utf-8')
+    f = codecs.open('DataPreparing/Data/indicesHTMLFile/بورس اوراق بهادار تهران - لیست شرکت ها.html', encoding='utf-8')
     htmltxt = f.read()
     f.close()
     parsed_html = BeautifulSoup(htmltxt, 'lxml')
@@ -111,3 +112,32 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
 
         fn += 1
         print(str(int(fn / len(Namads) * 100.)) + '% > ' + namad['title'])
+
+
+def downloadOverallDataExcelFromIranbourse(OutputDir='OverallDataExcelFromIranBourse'):
+    if not os.path.exists(OutputDir):
+        os.makedirs(OutputDir)
+
+    SummeryUrl, filename = 'http://tse.ir/archive/Trade/Cash/TradeSummary/', 'TradeSummary.xls'
+    r = requests.get(SummeryUrl + filename)
+    if r.status_code == 200:
+        with open(OutputDir + '/' + filename, "wb") as code:
+            code.write(r.content)
+    else:
+        print('Cannot get file : ' + filename + ' !. ')
+
+    WholeIndexUrl, filename = 'http://tse.ir/archive/Indices/Main/', 'Indices_IRX6XTPI0006.xls'
+    r = requests.get(WholeIndexUrl + filename)
+    if r.status_code == 200:
+        with open(OutputDir + '/' + filename, "wb") as code:
+            code.write(r.content)
+    else:
+        print('Cannot get file : ' + filename + ' !. ')
+
+    WholeIndexSameWeightUrl, filename = 'http://tse.ir/archive/Indices/Main/', 'Indices_IRX6XTPI0026.xls'
+    r = requests.get(WholeIndexSameWeightUrl + filename)
+    if r.status_code == 200:
+        with open(OutputDir + '/' + filename, "wb") as code:
+            code.write(r.content)
+    else:
+        print('Cannot get file : ' + filename + ' !. ')

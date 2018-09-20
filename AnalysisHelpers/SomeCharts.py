@@ -1,15 +1,16 @@
 import os
 import pickle
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
-
-plt.rc('font', family='Arial')  # Arial, Thahoma, Times New Roman
-
+from bidi import algorithm as bidialg
+import arabic_reshaper
 
 # plt.style.use('fivethirtyeight')
 # plt.style.use('ggplot')
+matplotlib.rcParams["figure.figsize"] = (16, 10)
 
 
 def drawScaters(OutputDir="Charts", InputFile="AllNamadsByNamads.pkl"):
@@ -22,6 +23,7 @@ def drawScaters(OutputDir="Charts", InputFile="AllNamadsByNamads.pkl"):
 
     print('start writing resaults for ' + str(allData.__len__()) + ' Namad')
 
+    pr = 0
     for Namad in allData:
         NamadData = allData[Namad]
 
@@ -43,72 +45,78 @@ def drawScaters(OutputDir="Charts", InputFile="AllNamadsByNamads.pkl"):
         # PriceOfPreDay = [DayData['قیمت روز قبل'] for DayData in NamadData]
         ValueOfBazzar = [NamadData[DayData]['ارزش بازار'] for DayData in NamadData]  # ارزش کل سهام های نماد
 
+        plt.clf()
         # 1th Figure
         plt.subplot(221)
         x = (np.asarray(PercentOfClosePrice))
         y = (np.asarray(ExchangeCount))
-        # Linear Regression
         try:
+            # Linear Regression
             z = np.polyfit(x, y, 1)
             p = np.poly1d(z)
             plt.plot(x, p(x), 'r-')
+            # Scatter
+            plt.scatter(x, y)
+            plt.xlabel('PercentOfClosePrice')
+            plt.ylabel('ExchangeCount')
         except:
             pass
-        # Scatter
-        plt.scatter(x, y)
-        plt.xlabel('PercentOfClosePrice')
-        plt.ylabel('ExchangeCount')
 
         # 2th Figure
         plt.subplot(222)
         x = np.log(np.asarray(ValueOfBazzar) + 1)
         y = (np.asarray(ExchangeCount))
-        # Linear Regression
         try:
+            # Linear Regression
             z = np.polyfit(x, y, 1)
             p = np.poly1d(z)
             plt.plot(x, p(x), 'r-')
+            # Scatter
+            plt.scatter(x, y)
+            plt.xlabel('log ValueOfBazzar')
+            plt.ylabel('ExchangeCount')
         except:
             pass
-        # Scatter
-        plt.scatter(x, y)
-        plt.xlabel('log ValueOfBazzar')
-        plt.ylabel('ExchangeCount')
 
         # 3th Figure
         plt.subplot(223)
         x = (np.asarray(PercentOfLastPrice))
         y = np.log(np.asarray(ValueOfBazzar) + 1)
-        # Linear Regression
         try:
+            # Linear Regression
             z = np.polyfit(x, y, 1)
             p = np.poly1d(z)
             plt.plot(x, p(x), 'r-')
+            # Scatter
+            plt.scatter(x, y)
+            plt.xlabel('PercentOfLastPrice')
+            plt.ylabel('log ValueOfBazzar')
         except:
             pass
-        # Scatter
-        plt.scatter(x, y)
-        plt.xlabel('PercentOfLastPrice')
-        plt.ylabel('log ValueOfBazzar')
 
         # 4th Figure
         plt.subplot(224)
         x = (np.asarray(PercentOfLastPrice))
         y = (np.asarray(PercentOfLastPrice))
-        # Linear Regression
         try:
+            # Linear Regression
             z = np.polyfit(x, y, 1)
             p = np.poly1d(z)
             plt.plot(x, p(x), 'r-')
+            # Scatter
+            plt.scatter(x, y)
+            plt.xlabel('PercentOfLastPrice')
+            plt.ylabel('PercentOfLastPrice')
         except:
             pass
-        # Scatter
-        plt.scatter(x, y)
-        plt.xlabel('PercentOfLastPrice')
-        plt.ylabel('PercentOfLastPrice')
 
-        plt.suptitle(Namad)
-        plt.show()
+        reshaped_text = arabic_reshaper.reshape(Namad)
+        text = bidialg.get_display(reshaped_text)
+        plt.suptitle(text)
+        plt.savefig(OutputDir + '/' + '_' + Namad + '_' + '.png')
+        # plt.show()
+        pr += 1
+        print(Namad + ' > ' + str(int(pr / len(allData) * 100)) + ' % done!')
 
 
 def drawCorrelations(InputDir='NamadsExcelsFromIranBourse', OutputDir="Charts/IntraNamadCorrelations"):
@@ -117,10 +125,12 @@ def drawCorrelations(InputDir='NamadsExcelsFromIranBourse', OutputDir="Charts/In
 
     allData = {}
 
+    fig = plt.figure()
+
     for root, dirs, files in os.walk(InputDir):
         files.sort()
         print('start readin files')
-        fi = 0.0
+        fi = 0
         for filename in files:
             print(str(int(fi / files.__len__() * 100.0)) + ' %  ... ' + filename)
             fi += 1.0
@@ -131,20 +141,20 @@ def drawCorrelations(InputDir='NamadsExcelsFromIranBourse', OutputDir="Charts/In
                 continue
 
             df = df_list[0]  # first frame only !
-            # df.to_csv('Data/table {}.csv'.format(0))
+            # df.to_csv('DataPreparing/Data/table {}.csv'.format(0))
             if df.isnull().values.any():
                 print('null value in > ' + filename)
                 continue
 
             parts = filename.split('.')[0].split('_')
             NamadId = parts[1]
-            NamadCode = parts[1]
+            NamadCode = parts[2]
 
             thisNamadCorr = df.corr()
 
             allData[NamadId] = thisNamadCorr
 
-            fig = plt.figure()
+            fig.clf()
             ax = fig.add_subplot(111)
             cax = ax.matshow(thisNamadCorr, cmap='coolwarm', vmin=-1, vmax=1)
             fig.colorbar(cax)
@@ -152,7 +162,11 @@ def drawCorrelations(InputDir='NamadsExcelsFromIranBourse', OutputDir="Charts/In
             ax.set_xticks(ticks)
             plt.xticks(rotation=90)
             ax.set_yticks(ticks)
-            ax.set_xticklabels(df.columns)
-            ax.set_yticklabels(df.columns)
-            plt.savefig(OutputDir + '/' + NamadId + '_' + NamadCode + '.png')
-            plt.show()
+            xl = [bidialg.get_display(arabic_reshaper.reshape(tx)) for tx in df.columns]
+            ax.set_xticklabels(xl)
+            ax.set_yticklabels(xl)
+            reshaped_text = arabic_reshaper.reshape(NamadId)
+            text = bidialg.get_display(reshaped_text)
+            plt.suptitle(text)
+            plt.savefig(OutputDir + '/' + NamadCode + '_' + NamadId + '_' + '.png')
+            # plt.show()

@@ -27,7 +27,7 @@ def mergeIranbourseAllDayExcelsByNamads(InputDir="DailyExcelsFromIranBourse", Ou
                 continue
 
             df = df_list[0]  # first frame only !
-            # df.to_csv('Data/table {}.csv'.format(0))
+            # df.to_csv('DataPreparing/Data/table {}.csv'.format(0))
             if df.isnull().values.any():
                 print('null value in > ' + filename)
                 continue
@@ -94,7 +94,7 @@ def mergeIranbourseAllDayExcelsByDays(InputDir="DailyExcelsFromIranBourse", Outp
                 continue
 
             df = df_list[0]  # first frame only !
-            # df.to_csv('Data/table {}.csv'.format(0))
+            # df.to_csv('DataPreparing/Data/table {}.csv'.format(0))
             if df.isnull().values.any():
                 print('null value in > ' + filename)
                 continue
@@ -142,14 +142,14 @@ def mergeIranbourseAllNamadExcelsByNamadd(InputDir="NamadsExcelsFromIranBourse",
                 continue
 
             df = df_list[0]  # first frame only !
-            # df.to_csv('Data/table {}.csv'.format(0))
+            # df.to_csv('DataPreparing/Data/table {}.csv'.format(0))
             if df.isnull().values.any():
                 print('null value in > ' + filename)
                 continue
 
             parts = filename.split('.')[0].split('_')
             NamadId = parts[1]
-            NamadCode = parts[1]
+            NamadCode = parts[2]
 
             thisNamad = {}
             for col in df.columns.values:

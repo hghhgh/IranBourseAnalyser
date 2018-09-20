@@ -12,7 +12,7 @@ except ImportError:
 
 
 # Automatic downloading of daily bourse data as .xls file
-def downloadAllDayExcelsFromIranbourse(OutDir='excels'):
+def downloadAllDayExcelsFromIranbourse(OutDir='DailyExcelsFromIranBourse'):
     if not os.path.exists(OutDir):
         os.makedirs(OutDir)
 

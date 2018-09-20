@@ -11,6 +11,8 @@ from matplotlib import pyplot
 
 # install font on ubuntu using : sudo apt-get install msttcorefonts
 # matplotlib.font_manager._rebuild()
+from AnalysisHelpers.Profit import *
+
 pyplot.rc('font', family='Arial')  # Arial, Thahoma, Times New Roman
 # pyplot.style.use('fivethirtyeight')
 pyplot.style.use('ggplot')
@@ -25,19 +27,6 @@ def drawDataWithTrendLine(series, z, name):
     text = bidialg.get_display(name)  # .encode('utf-8'))
     pyplot.title(text)
     pyplot.show()
-
-
-# calculating Profit should be corrected later
-def getProfitValue(Maximum, Minimum, ClosePrice, LastPrice, buyidx, sellidx):
-    # TODO
-
-    # به نرخ تورم هم بستگی داره در اصل
-    # به کارمزد کارگزاری بستگی داره
-
-    ProfitPrice = ClosePrice[buyidx + sellidx]['v'] - ClosePrice[buyidx]['v']
-    ProfitPercent = int(round(ProfitPrice / ClosePrice[buyidx]['v'] * 100))
-
-    return ProfitPrice, ProfitPercent
 
 
 def findBestDelayBetweenBuyAndSell(Maximum, Minimum, ClosePrice, LastPrice, minDays, maxDays):

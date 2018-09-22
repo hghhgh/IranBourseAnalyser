@@ -10,7 +10,9 @@ import arabic_reshaper
 
 # plt.style.use('fivethirtyeight')
 # plt.style.use('ggplot')
+# plt.style.use('seaborn-whitegrid')
 matplotlib.rcParams["figure.figsize"] = (16, 10)
+plt.rcParams['image.interpolation'] = 'nearest'
 
 
 def drawScaters(OutputDir="Charts", InputFile="AllNamadsByNamads.pkl"):
@@ -158,15 +160,15 @@ def drawCorrelations(InputDir='NamadsExcelsFromIranBourse', OutputDir="Charts/In
             ax = fig.add_subplot(111)
             cax = ax.matshow(thisNamadCorr, cmap='coolwarm', vmin=-1, vmax=1)
             fig.colorbar(cax)
-            ticks = np.arange(0, len(df.columns), 1)
+            ticks = np.arange(0, len(thisNamadCorr.columns), 1)
             ax.set_xticks(ticks)
             plt.xticks(rotation=90)
             ax.set_yticks(ticks)
-            xl = [bidialg.get_display(arabic_reshaper.reshape(tx)) for tx in df.columns]
+            xl = [bidialg.get_display(arabic_reshaper.reshape(tx)) for tx in thisNamadCorr.columns]
             ax.set_xticklabels(xl)
             ax.set_yticklabels(xl)
             reshaped_text = arabic_reshaper.reshape(NamadId)
             text = bidialg.get_display(reshaped_text)
-            plt.suptitle(text)
+            plt.suptitle(text, y=.08)
             plt.savefig(OutputDir + '/' + NamadCode + '_' + NamadId + '_' + '.png')
             # plt.show()

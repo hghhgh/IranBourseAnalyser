@@ -3,16 +3,17 @@
 import datetime
 import math
 import pickle
+import sklearn
 
 import arabic_reshaper
 import bidi.algorithm
 import numpy
 from matplotlib import pyplot
-
-# import matplotlib
+from sklearn import metrics
 
 # install font on ubuntu using : sudo apt-get install msttcorefonts
 # matplotlib.font_manager._rebuild()
+from AnalysisHelpers import MutualInformation
 from AnalysisHelpers.Profit import *
 
 pyplot.rc('font', family='Arial')  # Arial, Thahoma, Times New Roman
@@ -32,24 +33,24 @@ def drawDataWithTrendLine(series, z, name):
     pyplot.show()
 
 
-def findBestDelayBetweenBuyAndSell(Maximum, Minimum, ClosePrice, LastPrice, minDays, maxDays):
+def findBestDelayBetweenBuyAndSell(Dates, ClosePrice, LastPrice, minDays, maxDays):
     # ! warning : input arrays should be sorted interm of dates
 
     # Profits = []
     ProfitsOnLengths = {}
     for buy in range(0, len(ClosePrice) - maxDays):
-        if math.isnan(ClosePrice[buy]['v']):
+        if math.isnan(ClosePrice[buy]):
             continue
-        buydate = ClosePrice[buy]['pd']
+        buydate = Dates[buy]
         for sell in range(minDays, maxDays):
-            if math.isnan(ClosePrice[buy + sell]['v']):
+            if math.isnan(ClosePrice[buy + sell]):
                 continue
-            selldate = ClosePrice[buy + sell]['pd']
+            selldate = Dates[buy + sell]
             if selldate > buydate + datetime.timedelta(
                     maxDays):  # some days may be holyday and dont have data in the array
                 break
 
-            ProfitPrice, ProfitPercent = getProfitValue(Maximum, Minimum, ClosePrice, LastPrice, buy, sell)
+            ProfitPrice, ProfitPercent = getProfitValue(Dates, ClosePrice, LastPrice, buy, sell)
             SellDelay = (selldate - buydate).days
             # Profits.append(
             #     {'ProfitPrice': ProfitPrice, 'ProfitPercent': ProfitPercent,
@@ -99,7 +100,12 @@ def findBestDelayBetweenBuyAndSell(Maximum, Minimum, ClosePrice, LastPrice, minD
         return -1, -1, -1
 
 
-def calculateScors(Data, MinDataLen):
+def calculateScors(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=""):
+    # load data
+    f = open(InputFile, "rb")
+    Data = pickle.load(f)
+    f.close()
+
     adsize = Data.__len__()
     print('start writing scores for ' + str(adsize) + ' namad')
 
@@ -109,25 +115,20 @@ def calculateScors(Data, MinDataLen):
         AnalysisDataResult[Namad] = {}
         NamadData = Data[Namad]
 
-        try:
-            Name = NamadData['نام']
-        except KeyError:
-            Name = Namad
-        # Value = NamadData['ارزش']
-        # Volume = NamadData['حجم']
-        Maximum = NamadData['بیشترین']
-        Minimum = NamadData['کمترین']
-        ExchangeCount = NamadData['دفعات معامله']
-        ClosePrice = NamadData['مقدار قیمت پایانی']
+        Dates = [NamadData[k]['تاريخ'] for k in NamadData]
+        MinMaxDistanceSeries = numpy.asarray([NamadData[k]['بیشترین'] for k in NamadData]) - numpy.asarray(
+            [NamadData[k]['کمترین'] for k in NamadData])
+        ExchangeCount = [NamadData[k]['دفعات معامله'] for k in NamadData]
+        ClosePrice = [NamadData[k]['مقدار قیمت پایانی'] for k in NamadData]
         # taqirqeymatpayani = NamadData[
         #     'تغییر قیمت پایانی']  # «قیمت پایانی» برابر با میانگین وزنی قیمت‌های معامله‌شده در همان روز است.
-        PercentOfClosePrice = NamadData['درصد قیمت پایانی']  # میانگین قیمت سهم در روز
-        LastPrice = NamadData[
-            'مقدار آخرین قیمت']  # «قیمت آخرین معامله» برابر است با آخرین قیمتی که تا آن لحظه معامله شده است.
-        # taqirakharinqeymat = NamadData['تغییر آخرین قیمت']
-        PercentOfLastPrice = NamadData['درصد آخرین قیمت']  # آخرین قیمت معامله شده
-        # PriceOfPreDay = NamadData['قیمت روز قبل']
-        ValueOfBazzar = NamadData['ارزش بازار']  # ارزش کل سهام های نماد
+        PercentOfClosePrice = [NamadData[k]['درصد قیمت پایانی'] for k in NamadData]  # میانگین قیمت سهم در روز
+        LastPrice = [NamadData[k]['مقدار آخرین قیمت'] for k in
+                     NamadData]  # «قیمت آخرین معامله» برابر است با آخرین قیمتی که تا آن لحظه معامله شده است.
+        # taqirakharinqeymat = [NamadData[k]['تغییر آخرین قیمت'] for k in NamadData]
+        PercentOfLastPrice = [NamadData[k]['درصد آخرین قیمت'] for k in NamadData]  # آخرین قیمت معامله شده
+        PriceOfPreDay = [NamadData[k]['قیمت روز قبل'] for k in NamadData]
+        ValueOfBazzar = [NamadData[k]['ارزش بازار'] for k in NamadData]  # ارزش کل سهام های نماد
 
         # atleast MinDataLen data needed
         if len(ClosePrice) < MinDataLen:
@@ -135,60 +136,64 @@ def calculateScors(Data, MinDataLen):
             continue
 
         # extract scores :
-        AnalysisDataResult[Namad][Name] = Name
-        AnalysisDataResult[Namad]['tedad_roozhayee_ke_namad_tu_300ta_bude'] = Maximum.__len__()
+        AnalysisDataResult[Namad]['tedad_roozhayee_ke_namad_tu_300ta_bude'] = len(NamadData)
 
-        ValueOfBazzarSeries = [float(d['v']) for d in ValueOfBazzar]
-        z = numpy.polyfit(range(len(ValueOfBazzar)), ValueOfBazzarSeries, 1)
+        z = numpy.polyfit(range(len(ValueOfBazzar)), ValueOfBazzar, 1)
         AnalysisDataResult[Namad]['ValueOfBazzarTrendLine'] = z
-        # drawDataWithTrendLine(ValueOfBazzarSeries, z, Namad + '-' + 'ارزش بازار کل سهام های نماد')
+        # drawDataWithTrendLine(ValueOfBazzar, z, Namad + '-' + 'ارزش بازار کل سهام های نماد')
 
-        ExchangeCountSeries = [int(d['v']) for d in ExchangeCount]
-        AnalysisDataResult[Namad]['miangeen_tedad_moamelat_dar_rooz_baraye_kolle_dadeha'] = sum(
-            ExchangeCountSeries) / len(
-            ExchangeCountSeries)
-        z = numpy.polyfit(range(len(ExchangeCount)), ExchangeCountSeries, 1)
+        AnalysisDataResult[Namad]['miangeen_tedad_moamelat_dar_rooz_baraye_kolle_dadeha'] = sum(ExchangeCount) / len(
+            ExchangeCount)
+        z = numpy.polyfit(range(len(ExchangeCount)), ExchangeCount, 1)
         AnalysisDataResult[Namad]['dafaatTrendLine'] = z
-        # drawDataWithTrendLine(ExchangeCountSeries, z, Namad + '-' + 'دفعات معامله')
+        # drawDataWithTrendLine(ExchangeCount, z, Namad + '-' + 'دفعات معامله')
 
-        PercentOfClosePriceSeries = [float(d['v']) for d in PercentOfClosePrice]
-        z = numpy.polyfit(range(len(PercentOfClosePrice)), PercentOfClosePriceSeries, 1)
+        z = numpy.polyfit(range(len(PercentOfClosePrice)), PercentOfClosePrice, 1)
         AnalysisDataResult[Namad]['bishtarinTrendLine'] = z
-        # drawDataWithTrendLine(PercentOfClosePriceSeries, z, Namad + '-' + 'درصد قیمت پایانی')
+        # drawDataWithTrendLine(PercentOfClosePrice, z, Namad + '-' + 'درصد قیمت پایانی')
 
-        PercentOfLastPriceSeries = [float(d['v']) for d in PercentOfLastPrice]
-        z = numpy.polyfit(range(len(PercentOfLastPrice)), PercentOfLastPriceSeries, 1)
+        z = numpy.polyfit(range(len(PercentOfLastPrice)), PercentOfLastPrice, 1)
         AnalysisDataResult[Namad]['kamtarinTrendLine'] = z
-        # drawDataWithTrendLine(PercentOfLastPriceSeries, z, Namad + '-' + 'درصد آخرین قیمت')
+        # drawDataWithTrendLine(PercentOfLastPrice, z, Namad + '-' + 'درصد آخرین قیمت')
 
-        MinMaxDistanceSeries = numpy.asarray([float(d['v']) for d in Maximum]) - numpy.asarray(
-            [float(d['v']) for d in Minimum])
         z = numpy.polyfit(range(len(MinMaxDistanceSeries)), MinMaxDistanceSeries, 1)
         AnalysisDataResult[Namad]['kamtarinbishtarinfaseleTrendLine'] = z
         # drawDataWithTrendLine(MinMaxDistanceSeries, z, Namad + '-' + 'فاصله بیشترین و کمترین قیمت')
 
-        BestExpectedDelay, ExpectedProfitPrice, ExpectedProfitPercent = findBestDelayBetweenBuyAndSell(Maximum, Minimum,
+        BestExpectedDelay, ExpectedProfitPrice, ExpectedProfitPercent = findBestDelayBetweenBuyAndSell(Dates,
                                                                                                        ClosePrice,
                                                                                                        LastPrice, 7, 27)
         AnalysisDataResult[Namad]['BestDelayBetweenBuyAndSell'] = {'BestExpectedDelay': BestExpectedDelay,
                                                                    'ExpectedProfitPrice': ExpectedProfitPrice,
                                                                    'ExpectedProfitPercent': ExpectedProfitPercent}
 
+        # Lower entropy means more predictable random variable
+        entpp, normentpp = MutualInformation.entropy(PercentOfClosePrice)
+        # entpp, normentpp = MutualInformation.entropy([round(p, 2) for p in PercentOfClosePrice])
+        AnalysisDataResult[Namad]['entropy_price_percent'] = normentpp
+
+        ppmi = metrics.mutual_info_score(PercentOfClosePrice[0:-BestExpectedDelay],
+                                         PercentOfClosePrice[BestExpectedDelay:])
+        nppmi = metrics.normalized_mutual_info_score(PercentOfClosePrice[0:-BestExpectedDelay],
+                                                     PercentOfClosePrice[BestExpectedDelay:])
+        AnalysisDataResult[Namad]['mutual_info_price_percent_and_price_percent_with_best_expected_delay'] = nppmi
+
+        entp, normentp = MutualInformation.entropy(ClosePrice)
+        AnalysisDataResult[Namad]['entropy_price'] = normentp
+
+        entex, normentex = MutualInformation.entropy(ExchangeCount)
+        AnalysisDataResult[Namad]['entropy_exchange'] = normentex
+
+        # ent2 = entropy_estimators.entropy([[round(p, 2)] for p in PercentOfClosePrice], k=3)
+        # AnalysisDataResult[Namad]['entropy2'] = ent2
+        #
+        # mi2 = entropy_estimators.ppmi([[round(p, 2)] for p in PercentOfClosePrice], [[p] for p in ValueOfBazzar])
+        # AnalysisDataResult[Namad]['mutual_information2'] = mi2
+
         nidx += 1
         print(str(int(nidx / adsize * 100)) + '% done > ' + Namad)
 
-    return AnalysisDataResult
-
-
-# run main function
-# load data
-f = open("AllData.pkl", "rb")
-AllData = pickle.load(f)
-f.close()
-
-AnalysisDataForAll = calculateScors(AllData, 100)
-
-# save results
-f = open("NamadScores.pkl", "wb")
-pickle.dump(AnalysisDataForAll, f)
-f.close()
+    # save results
+    f = open(OutputDir + "/NamadScores.pkl", "wb")
+    pickle.dump(AnalysisDataResult, f)
+    f.close()

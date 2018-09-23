@@ -57,7 +57,7 @@ def computePercentOfChangeDistributionForAllNamadsAsWhole(OutputDir="Distiributi
         hist, bin_edges = np.histogram(a, density=True)
         # _counts = Counter(a)
 
-        # plt.hist(a, 'auto)
+        # plt.hist(a, bin_edges)
         # plt.suptitle(str(m))
 
         # plt.show()

@@ -50,7 +50,7 @@ def findBestDelayBetweenBuyAndSell(Dates, ClosePrice, LastPrice, minDays, maxDay
                     maxDays):  # some days may be holyday and dont have data in the array
                 break
 
-            ProfitPrice, ProfitPercent = getProfitValue(Dates, ClosePrice, LastPrice, buy, sell)
+            ProfitPrice, ProfitPercent = getSingleShareProfitValue(Dates, ClosePrice, LastPrice, buy, sell)
             SellDelay = (selldate - buydate).days
             # Profits.append(
             #     {'ProfitPrice': ProfitPrice, 'ProfitPercent': ProfitPercent,
@@ -168,27 +168,23 @@ def calculateScors(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=
                                                                    'ExpectedProfitPercent': ExpectedProfitPercent}
 
         # Lower entropy means more predictable random variable
-        entpp, normentpp = MutualInformation.entropy(PercentOfClosePrice)
-        # entpp, normentpp = MutualInformation.entropy([round(p, 2) for p in PercentOfClosePrice])
+        entpp, normentpp = MutualInformation.computeEntropy4Continuous(PercentOfClosePrice, per=1)
         AnalysisDataResult[Namad]['entropy_price_percent'] = normentpp
 
-        ppmi = metrics.mutual_info_score(PercentOfClosePrice[0:-BestExpectedDelay],
-                                         PercentOfClosePrice[BestExpectedDelay:])
-        nppmi = metrics.normalized_mutual_info_score(PercentOfClosePrice[0:-BestExpectedDelay],
-                                                     PercentOfClosePrice[BestExpectedDelay:])
+        # ppmi = metrics.mutual_info_score([round(p, 2) for p in PercentOfClosePrice[0:-BestExpectedDelay]],
+        #                                  [round(p, 2) for p in PercentOfClosePrice[BestExpectedDelay:]])
+        # nppmi = metrics.normalized_mutual_info_score([round(p, 2) for p in PercentOfClosePrice[0:-BestExpectedDelay]],
+        #                                              [round(p, 2) for p in PercentOfClosePrice[BestExpectedDelay:]])
+        ppmi, nppmi = MutualInformation.computMutualInformation4Continuous(PercentOfClosePrice[0:-BestExpectedDelay],
+                                                                           PercentOfClosePrice[BestExpectedDelay:],
+                                                                           per=1)
         AnalysisDataResult[Namad]['mutual_info_price_percent_and_price_percent_with_best_expected_delay'] = nppmi
 
-        entp, normentp = MutualInformation.entropy(ClosePrice)
+        entp, normentp = MutualInformation.computeEntropy4Discrete(ClosePrice)
         AnalysisDataResult[Namad]['entropy_price'] = normentp
 
-        entex, normentex = MutualInformation.entropy(ExchangeCount)
+        entex, normentex = MutualInformation.computeEntropy4Discrete(ExchangeCount)
         AnalysisDataResult[Namad]['entropy_exchange'] = normentex
-
-        # ent2 = entropy_estimators.entropy([[round(p, 2)] for p in PercentOfClosePrice], k=3)
-        # AnalysisDataResult[Namad]['entropy2'] = ent2
-        #
-        # mi2 = entropy_estimators.ppmi([[round(p, 2)] for p in PercentOfClosePrice], [[p] for p in ValueOfBazzar])
-        # AnalysisDataResult[Namad]['mutual_information2'] = mi2
 
         nidx += 1
         print(str(int(nidx / adsize * 100)) + '% done > ' + Namad)

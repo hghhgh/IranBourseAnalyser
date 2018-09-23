@@ -7,22 +7,22 @@ Extract and Analys data from [Iran bourse or stock exchange](http://www.iranbour
 # Our preference in decision support and inference approach are as below :
 1. **Bayesian Approach**, like :  _Bayesian Inference_
     - To prevent overfitting on small data
-    - To use human expertise 
-2. **Machine Learning** Technologies, like : _Neural network_
-    - To handel time series with large input dimension
-    - To use useful libraries
-3. **Frequentist Inference**, such as : _hypothesis testing_ and other _data science_ techniques
+    - To use human expertise and belief
+2. **Frequentist Inference**, such as : _hypothesis testing_
     - To apply descriptive analysis
     - To apply diagnostic analysis
     - To apply prescriptive analysis
     - To apply predictive analysis
-
+3. Other **data science** techniques, like : _Neural network_ and _Machine Learning_ Technologies 
+    - To handel time series with large input dimension
+    - To use useful libraries
 
 # This project has 3 packages 
 
 1. DataPrepairing
 2. AnalysisHelpers
 3. DecisionSupports
+    - My decision cycle is [here](DecisionSupports/DecisionProcess.md)
 
 The last package is the main one !
 

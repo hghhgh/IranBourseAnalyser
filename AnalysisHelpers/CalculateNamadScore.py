@@ -3,17 +3,15 @@
 import datetime
 import math
 import pickle
-import sklearn
 
 import arabic_reshaper
 import bidi.algorithm
 import numpy
 from matplotlib import pyplot
-from sklearn import metrics
 
 # install font on ubuntu using : sudo apt-get install msttcorefonts
 # matplotlib.font_manager._rebuild()
-from AnalysisHelpers import MutualInformation
+from AnalysisHelpers.Helpers import MutualInformation
 from AnalysisHelpers.Profit import *
 
 pyplot.rc('font', family='Arial')  # Arial, Thahoma, Times New Roman
@@ -50,7 +48,7 @@ def findBestDelayBetweenBuyAndSell(Dates, ClosePrice, LastPrice, minDays, maxDay
                     maxDays):  # some days may be holyday and dont have data in the array
                 break
 
-            ProfitPrice, ProfitPercent = getSingleShareProfitValue(Dates, ClosePrice, LastPrice, buy, sell)
+            ProfitPrice, ProfitPercent = getSingleNamadProfitValue(Dates, ClosePrice, LastPrice, buy, sell)
             SellDelay = (selldate - buydate).days
             # Profits.append(
             #     {'ProfitPrice': ProfitPrice, 'ProfitPercent': ProfitPercent,
@@ -100,7 +98,7 @@ def findBestDelayBetweenBuyAndSell(Dates, ClosePrice, LastPrice, minDays, maxDay
         return -1, -1, -1
 
 
-def calculateScors(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=""):
+def calculateScores(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=""):
     # load data
     f = open(InputFile, "rb")
     Data = pickle.load(f)
@@ -135,41 +133,42 @@ def calculateScors(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=
             print('Small data : ' + str(len(ClosePrice)) + ' > ' + Namad)
             continue
 
+        CurrentAnalysis = {}
         # extract scores :
-        AnalysisDataResult[Namad]['tedad_roozhayee_ke_namad_tu_300ta_bude'] = len(NamadData)
+        CurrentAnalysis['tedad_roozhayee_ke_namad_tu_300ta_bude'] = len(NamadData)
 
         z = numpy.polyfit(range(len(ValueOfBazzar)), ValueOfBazzar, 1)
-        AnalysisDataResult[Namad]['ValueOfBazzarTrendLine'] = z
+        CurrentAnalysis['ValueOfBazzarTrendLine'] = z
         # drawDataWithTrendLine(ValueOfBazzar, z, Namad + '-' + 'ارزش بازار کل سهام های نماد')
 
-        AnalysisDataResult[Namad]['miangeen_tedad_moamelat_dar_rooz_baraye_kolle_dadeha'] = sum(ExchangeCount) / len(
+        CurrentAnalysis['miangeen_tedad_moamelat_dar_rooz_baraye_kolle_dadeha'] = sum(ExchangeCount) / len(
             ExchangeCount)
         z = numpy.polyfit(range(len(ExchangeCount)), ExchangeCount, 1)
-        AnalysisDataResult[Namad]['dafaatTrendLine'] = z
+        CurrentAnalysis['dafaatTrendLine'] = z
         # drawDataWithTrendLine(ExchangeCount, z, Namad + '-' + 'دفعات معامله')
 
         z = numpy.polyfit(range(len(PercentOfClosePrice)), PercentOfClosePrice, 1)
-        AnalysisDataResult[Namad]['bishtarinTrendLine'] = z
+        CurrentAnalysis['bishtarinTrendLine'] = z
         # drawDataWithTrendLine(PercentOfClosePrice, z, Namad + '-' + 'درصد قیمت پایانی')
 
         z = numpy.polyfit(range(len(PercentOfLastPrice)), PercentOfLastPrice, 1)
-        AnalysisDataResult[Namad]['kamtarinTrendLine'] = z
+        CurrentAnalysis['kamtarinTrendLine'] = z
         # drawDataWithTrendLine(PercentOfLastPrice, z, Namad + '-' + 'درصد آخرین قیمت')
 
         z = numpy.polyfit(range(len(MinMaxDistanceSeries)), MinMaxDistanceSeries, 1)
-        AnalysisDataResult[Namad]['kamtarinbishtarinfaseleTrendLine'] = z
+        CurrentAnalysis['kamtarinbishtarinfaseleTrendLine'] = z
         # drawDataWithTrendLine(MinMaxDistanceSeries, z, Namad + '-' + 'فاصله بیشترین و کمترین قیمت')
 
         BestExpectedDelay, ExpectedProfitPrice, ExpectedProfitPercent = findBestDelayBetweenBuyAndSell(Dates,
                                                                                                        ClosePrice,
                                                                                                        LastPrice, 7, 27)
-        AnalysisDataResult[Namad]['BestDelayBetweenBuyAndSell'] = {'BestExpectedDelay': BestExpectedDelay,
+        CurrentAnalysis['BestDelayBetweenBuyAndSell'] = {'BestExpectedDelay': BestExpectedDelay,
                                                                    'ExpectedProfitPrice': ExpectedProfitPrice,
                                                                    'ExpectedProfitPercent': ExpectedProfitPercent}
 
         # Lower entropy means more predictable random variable
         entpp, normentpp = MutualInformation.computeEntropy4Continuous(PercentOfClosePrice, per=1)
-        AnalysisDataResult[Namad]['entropy_price_percent'] = normentpp
+        CurrentAnalysis['entropy_price_percent'] = normentpp
 
         # ppmi = metrics.mutual_info_score([round(p, 2) for p in PercentOfClosePrice[0:-BestExpectedDelay]],
         #                                  [round(p, 2) for p in PercentOfClosePrice[BestExpectedDelay:]])
@@ -178,13 +177,17 @@ def calculateScors(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir=
         ppmi, nppmi = MutualInformation.computMutualInformation4Continuous(PercentOfClosePrice[0:-BestExpectedDelay],
                                                                            PercentOfClosePrice[BestExpectedDelay:],
                                                                            per=1)
-        AnalysisDataResult[Namad]['mutual_info_price_percent_and_price_percent_with_best_expected_delay'] = nppmi
+        CurrentAnalysis['mutual_info_price_percent_and_price_percent_with_best_expected_delay'] = nppmi
 
         entp, normentp = MutualInformation.computeEntropy4Discrete(ClosePrice)
-        AnalysisDataResult[Namad]['entropy_price'] = normentp
+        CurrentAnalysis['entropy_price'] = normentp
 
         entex, normentex = MutualInformation.computeEntropy4Discrete(ExchangeCount)
-        AnalysisDataResult[Namad]['entropy_exchange'] = normentex
+        CurrentAnalysis['entropy_exchange'] = normentex
+
+        # filter very bad Namads !
+        # if
+        AnalysisDataResult[Namad] = CurrentAnalysis
 
         nidx += 1
         print(str(int(nidx / adsize * 100)) + '% done > ' + Namad)

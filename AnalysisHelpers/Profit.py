@@ -1,5 +1,5 @@
 # calculating Profit should be corrected later
-def getSingleShareProfitValue(Dates, ClosePrice, LastPrice, buyidx, sellidx):
+def getSingleNamadProfitValue(Dates, ClosePrice, LastPrice, buyidx, sellidx):
     # TODO
 
     # به نرخ تورم هم بستگی داره در اصل

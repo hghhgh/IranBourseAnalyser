@@ -11,6 +11,11 @@
 # AnalysisHelpers.SomeCharts.drawScaters(InputFile='DataPreparing/Data/AllNamadsByNamads.pkl', OutputDir='AnalysisHelpers/SomeCharts/Scatters')
 # AnalysisHelpers.SomeCharts.drawCorrelations(InputDir='DataPreparing/Data/NamadsExcelsFromIranBourse', OutputDir="AnalysisHelpers/SomeCharts/IntraNamadCorrelations")
 
-import AnalysisHelpers.CalculateNamadScore
-AnalysisHelpers.CalculateNamadScore.calculateScors(InputFile='DataPreparing/Data/AllNamadsByNamads.pkl', MinDataLen=100,
-                                                   OutputDir="AnalysisHelpers/Scores")
+# import AnalysisHelpers.CalculateNamadScore
+# AnalysisHelpers.CalculateNamadScore.calculateScores(InputFile='DataPreparing/Data/AllNamadsByNamads.pkl', MinDataLen=100,
+#                                                     OutputDir="AnalysisHelpers/Scores")
+
+import AnalysisHelpers.EnumeratePossibilities
+
+AnalysisHelpers.EnumeratePossibilities.extractCombinations(InputFile='DataPreparing/Data/AllNamadsByNamads.pkl',
+                                                           MinDataLen=100, OutputDir="AnalysisHelpers/Posibilities")

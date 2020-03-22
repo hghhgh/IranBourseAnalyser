@@ -16,10 +16,10 @@ def downloadAllDayExcelsFromIranbourse(OutDir='DailyExcelsFromIranBourse'):
     if not os.path.exists(OutDir):
         os.makedirs(OutDir)
 
-    numberOfDayIgnore = 10  # check : not data available on the server
+    numberOfDayIgnore = 60  # check : no data available on the server
     numberOfFileIgnore = 10  # check : data existed on local system
-    # example = 'http://www.iranbourse.com/archive/Trade/Cash/TradeOneDay/TradeOneDay_1396_2_18.xls'
-    bourseSite = 'http://www.iranbourse.com/archive/Trade/Cash/TradeOneDay/'
+    # example = 'http://tse.ir/archive/Trade/Cash/TradeOneDay/TradeOneDay_1396_2_18.xls'
+    bourseSite = 'https://tse.ir/archive/Trade/Cash/TradeOneDay/'
     ed = datetime.date.today()
 
     nodata = 0  # no data on the server
@@ -60,7 +60,7 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
 
     Namads = []
     # extract indicesHTMLFile eith ids
-    # save this url ( 'http://new.tse.ir/indices.html') using browser and then use it
+    # save this url ( 'http://tse.ir/indices.html') using browser and then use it
     f = codecs.open('DataPreparing/Data/indicesHTMLFile/بورس اوراق بهادار تهران - نمودار شاخص ها.html',
                     encoding='utf-8')
     htmltxt = f.read()
@@ -87,8 +87,8 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
                 title = unquote(par[0])
                 Namads.append({'title': title, 'id': id})
 
-    # example : http://www.iranbourse.com/archive/Trade/Cash/SymbolTrade/SymbolTrade_IRO1BHMN0002.xls
-    bourseSite = 'http://www.iranbourse.com/archive/Trade/Cash/SymbolTrade/'
+    # example : https://tse.ir/archive/Trade/Cash/SymbolTrade/SymbolTrade_IRO1BHMN0002.xls
+    bourseSite = 'https://tse.ir/archive/Trade/Cash/SymbolTrade/'
     fn = 0
     for namad in Namads:
         filename = 'SymbolTrade_' + namad['title'] + '_' + namad['id'] + '_.xls'

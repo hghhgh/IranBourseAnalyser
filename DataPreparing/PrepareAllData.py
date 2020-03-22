@@ -20,17 +20,17 @@ def DownloadAll():
 def MergeAll():
     # Merge Iranbourse daily excel to python dict pkl file
     MergeFiles.mergeIranbourseAllDayExcelsByNamads(InputDir='DataPreparing/Data/DailyExcelsFromIranBourse',
-                                                   OutputFile="Data/AllDataByNamad.pkl")
+                                                   OutputFile="DataPreparing/Data/AllDataByNamad.pkl")
     print('all xls merged !')
 
     # Merge Iranbourse daily excel to python dict pkl file
     MergeFiles.mergeIranbourseAllDayExcelsByDays(InputDir='DataPreparing/Data/DailyExcelsFromIranBourse',
-                                                 OutputFile="Data/AllDataByDays.pkl")
+                                                 OutputFile="DataPreparing/Data/AllDataByDays.pkl")
     print('all xls merged !')
 
     # Merge Iranbourse namads excel to python dict pkl file
     MergeFiles.mergeIranbourseAllNamadExcelsByNamadd(InputDir='DataPreparing/Data/NamadsExcelsFromIranBourse',
-                                                     OutputFile="Data/AllNamadsByNamads.pkl")
+                                                     OutputFile="DataPreparing/Data/AllNamadsByNamads.pkl")
     print('all xls merged !')
 
 

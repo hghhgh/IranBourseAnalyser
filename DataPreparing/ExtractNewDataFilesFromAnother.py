@@ -11,7 +11,7 @@ def createXLSforNamadFromPkl(OutputDir="namads", InputFile="AllData.pkl"):
     allData = pickle.load(f)
     f.close()
 
-    print('start writing resaults for ' + str(allData.__len__()) + ' namad')
+    print('start writing results for ' + str(allData.__len__()) + ' namad')
 
     pr = 0
     for namad in allData:
@@ -58,7 +58,7 @@ def groupNamadDataIntermOfDayOfWeekFromPKL(InputFile="AllData.pkl", OutputDir='n
     allData = pickle.load(f)
     f.close()
 
-    print('start writing resaults for ' + str(allData.__len__()) + ' namad')
+    print('start writing results for ' + str(allData.__len__()) + ' namad')
 
     if not os.path.exists(OutputDir):
         os.makedirs(OutputDir)

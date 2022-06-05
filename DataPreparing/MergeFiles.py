@@ -20,7 +20,13 @@ def mergeIranbourseAllDayExcelsByNamads(InputDir="DailyExcelsFromIranBourse", Ou
         for filename in files:
             print(str(int(fi / files.__len__() * 100.0)) + ' %  ... ' + filename)
             fi += 1.0
-            df_list = pandas.read_html(InputDir + '/' + filename)
+            try:
+                df_list = pandas.read_html(InputDir + '/' + filename)
+            except ValueError as e:
+                if e.args[0] == 'No tables found':
+                    continue
+                else:
+                    raise e
 
             if len(df_list) < 1:
                 print('no Data Frame in > ' + filename)
@@ -87,7 +93,13 @@ def mergeIranbourseAllDayExcelsByDays(InputDir="DailyExcelsFromIranBourse", Outp
         for filename in files:
             print(str(int(fi / files.__len__() * 100.0)) + ' %  ... ' + filename)
             fi += 1.0
-            df_list = pandas.read_html(InputDir + '/' + filename)
+            try:
+                df_list = pandas.read_html(InputDir + '/' + filename)
+            except ValueError as e:
+                if e.args[0] == 'No tables found':
+                    continue
+                else:
+                    raise e
 
             if len(df_list) < 1:
                 print('no Data Frame in > ' + filename)
@@ -135,7 +147,13 @@ def mergeIranbourseAllNamadExcelsByNamadd(InputDir="NamadsExcelsFromIranBourse",
         for filename in files:
             print(str(int(fi / files.__len__() * 100.0)) + ' %  ... ' + filename)
             fi += 1.0
-            df_list = pandas.read_html(InputDir + '/' + filename)
+            try:
+                df_list = pandas.read_html(InputDir + '/' + filename)
+            except ValueError as e:
+                if e.args[0] == 'No tables found':
+                    continue
+                else:
+                    raise e
 
             if len(df_list) < 1:
                 print('no Data Frame in > ' + filename)

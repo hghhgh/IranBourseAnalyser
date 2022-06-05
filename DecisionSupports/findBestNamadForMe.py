@@ -18,7 +18,7 @@ log = open('log.txt', 'w')
 f = open("AllData.pkl", "rb")
 allData = pickle.load(f)
 
-print('start writing resaults for ' + str(allData.__len__()) + ' namad')
+print('start writing results for ' + str(allData.__len__()) + ' namad')
 
 for namad in allData:
     print(namad)

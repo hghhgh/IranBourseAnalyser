@@ -40,7 +40,7 @@ def downloadAllDayExcelsFromIranbourse(OutDir='DailyExcelsFromIranBourse'):
         # go for next file to download
         url = bourseSite + name
         # download the url contents in binary format
-        r = requests.get(url)
+        r = requests.get(url, verify=False)
 
         # check if the file downloaded correctly
         if r.status_code == 200:
@@ -100,7 +100,7 @@ def downloadAllNamadExcelsFromIranbourse(OutputDir='NamadsExcelsFromIranBourse')
 
         # go for next file to download
         url = bourseSite + 'SymbolTrade_' + namad['id'] + '.xls'
-        r = requests.get(url)
+        r = requests.get(url, verify=False)
 
         # check if the file downloaded correctly
         if r.status_code == 200:
@@ -119,7 +119,7 @@ def downloadOverallDataExcelFromIranbourse(OutputDir='OverallDataExcelFromIranBo
         os.makedirs(OutputDir)
 
     SummeryUrl, filename = 'http://tse.ir/archive/Trade/Cash/TradeSummary/', 'TradeSummary.xls'
-    r = requests.get(SummeryUrl + filename)
+    r = requests.get(SummeryUrl + filename, verify=False)
     if r.status_code == 200:
         with open(OutputDir + '/' + filename, "wb") as code:
             code.write(r.content)
@@ -127,7 +127,7 @@ def downloadOverallDataExcelFromIranbourse(OutputDir='OverallDataExcelFromIranBo
         print('Cannot get file : ' + filename + ' !. ')
 
     WholeIndexUrl, filename = 'http://tse.ir/archive/Indices/Main/', 'Indices_IRX6XTPI0006.xls'
-    r = requests.get(WholeIndexUrl + filename)
+    r = requests.get(WholeIndexUrl + filename, verify=False)
     if r.status_code == 200:
         with open(OutputDir + '/' + filename, "wb") as code:
             code.write(r.content)
@@ -135,7 +135,7 @@ def downloadOverallDataExcelFromIranbourse(OutputDir='OverallDataExcelFromIranBo
         print('Cannot get file : ' + filename + ' !. ')
 
     WholeIndexSameWeightUrl, filename = 'http://tse.ir/archive/Indices/Main/', 'Indices_IRX6XTPI0026.xls'
-    r = requests.get(WholeIndexSameWeightUrl + filename)
+    r = requests.get(WholeIndexSameWeightUrl + filename, verify=False)
     if r.status_code == 200:
         with open(OutputDir + '/' + filename, "wb") as code:
             code.write(r.content)

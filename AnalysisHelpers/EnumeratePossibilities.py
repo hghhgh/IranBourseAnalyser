@@ -2,6 +2,7 @@
 # Functions in this file will be used to produce conditional probabilities !
 import datetime
 import math
+import os
 import pickle
 
 import numpy
@@ -35,6 +36,7 @@ def extractCombinations(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, Outpu
 
     PosibilitiesResult = {}
     nidx = 0
+    ProfitsOnLengthsWithOtherData = {}
     for Namad in Data:
         NamadData = Data[Namad]
         if len(NamadData) < MinDataLen:
@@ -51,7 +53,6 @@ def extractCombinations(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, Outpu
 
         TrendInMonths, GBDoWtrend, TrendInSeasons, GBYtrend = getTrendGroupBySomethingOverAllEntries(NamadData)
 
-        ProfitsOnLengthsWithOtherData = {}
         for buy in range(0, len(ClosePrice) - maxDays):
             if math.isnan(ClosePrice[buy]):
                 continue
@@ -88,6 +89,8 @@ def extractCombinations(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, Outpu
         print(str(int(nidx / adsize * 100)) + '% done > ' + Namad)
 
     # save results
+    if not os.path.exists(OutputDir):
+        os.makedirs(OutputDir)
     f = open(OutputDir + "/NamadEnumeratedData.pkl", "wb")
     pickle.dump(ProfitsOnLengthsWithOtherData, f)
     f.close()

@@ -23,7 +23,7 @@ def drawScaters(OutputDir="Charts", InputFile="AllNamadsByNamads.pkl"):
     allData = pickle.load(f)
     f.close()
 
-    print('start writing resaults for ' + str(allData.__len__()) + ' Namad')
+    print('start writing results for ' + str(allData.__len__()) + ' Namad')
 
     pr = 0
     for Namad in allData:

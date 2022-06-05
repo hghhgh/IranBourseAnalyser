@@ -2,6 +2,7 @@
 
 import datetime
 import math
+import os
 import pickle
 
 import arabic_reshaper
@@ -193,6 +194,8 @@ def calculateScores(InputFile="AllNamadsByNamads.pkl", MinDataLen=100, OutputDir
         print(str(int(nidx / adsize * 100)) + '% done > ' + Namad)
 
     # save results
+    if not os.path.exists(OutputDir):
+        os.makedirs(OutputDir)
     f = open(OutputDir + "/NamadScores.pkl", "wb")
     pickle.dump(AnalysisDataResult, f)
     f.close()
